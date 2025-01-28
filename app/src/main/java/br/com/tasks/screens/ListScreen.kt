@@ -34,20 +34,31 @@ import br.com.model.task
 import br.com.model.task2
 
 @Composable
-fun ListTasks(modifier: Modifier = Modifier) {
+fun ListTasks(
+    navigateToAddEdit: (Long?) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val tasks = listOf(task, task2)
-    ListContent(tasks)
+    ListContent(
+        navigateToAddEdit = {
+            navigateToAddEdit(null)
+        },
+        tasks = tasks
+    )
 }
 
 @Composable
 fun ListContent(
     tasks: List<Task>,
+    navigateToAddEdit: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = {
+                navigateToAddEdit(null)
+            }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
         }
@@ -111,7 +122,7 @@ fun TaskItem(
 @Preview
 @Composable
 private fun ListScreenPreview() {
-    ListTasks()
+    ListTasks({})
 }
 
 @Composable
