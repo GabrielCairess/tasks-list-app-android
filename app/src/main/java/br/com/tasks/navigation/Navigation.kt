@@ -35,7 +35,11 @@ fun NavigationTaskApp(modifier: Modifier = Modifier) {
 
         composable<AddEditTasksScreen> { backStackEntry ->
             val addEditTask = backStackEntry.toRoute<AddEditTasksScreen>()
-            AddEditScreen()
+            AddEditScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
