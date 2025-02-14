@@ -21,12 +21,17 @@ class TaskRepositoryImpl(private val taskDao: TaskDao) : TaskRepository {
     }
 
     override suspend fun insert(title: String, description: String?) {
-        val taskEntity = Task(title = title, description = description)
+        val taskEntity = Task(title = title, description = description, isCompleted = false)
         taskDao.insert(taskEntity)
     }
 
     override suspend fun delete(id: Long) {
         val task = taskDao.getById(id) ?: return
         taskDao.delete(task)
+    }
+
+    override suspend fun completeTask(id: Long, completed: Boolean) {
+        val task = taskDao.getById(id) ?: return
+        taskDao.insert(task.copy(isCompleted = completed))
     }
 }
