@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,8 @@ import br.com.model.task
 import br.com.tasks.database.DatabaseProvider
 import br.com.tasks.database.TaskRepositoryImpl
 import br.com.tasks.events.ListEvent
+import br.com.tasks.events.UiEvent
+import br.com.tasks.navigation.AddEditTasksScreen
 import br.com.tasks.viewmodels.ListTasksViewModel
 
 @Composable
@@ -50,11 +53,31 @@ fun ListTasks(
         ListTasksViewModel(repository = repository)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is UiEvent.Navigate<*> -> {
+                    when (uiEvent.route) {
+                        is AddEditTasksScreen -> {
+                            navigateToAddEdit(uiEvent.route.taskId)
+                        }
+                    }
+                }
+
+                UiEvent.NavigateBack -> {
+
+                }
+
+                is UiEvent.showSnackbar -> {
+
+                }
+            }
+        }
+
+    }
+
     ListContent(
         tasks = viewModel.tasks.collectAsState().value,
-        navigateToAddEdit = {
-            navigateToAddEdit(null)
-        },
         onEvent = viewModel::onEvent
     )
 }
@@ -62,7 +85,6 @@ fun ListTasks(
 @Composable
 fun ListContent(
     tasks: List<Task>,
-    navigateToAddEdit: (Long?) -> Unit,
     onEvent: (ListEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -70,7 +92,7 @@ fun ListContent(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navigateToAddEdit(null)
+                onEvent(ListEvent.EditTask(null))
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }

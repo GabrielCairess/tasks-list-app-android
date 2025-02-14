@@ -20,8 +20,10 @@ class TaskRepositoryImpl(private val taskDao: TaskDao) : TaskRepository {
         return task?.toTask()
     }
 
-    override suspend fun insert(title: String, description: String?) {
-        val taskEntity = Task(title = title, description = description, isCompleted = false)
+    override suspend fun insert(taskId: Long?, title: String, description: String?) {
+        val taskEntity = taskId?.let {
+            taskDao.getById(it)?.copy(title = title, description = description)
+        } ?: Task(title = title, description = description, isCompleted = false)
         taskDao.insert(taskEntity)
     }
 

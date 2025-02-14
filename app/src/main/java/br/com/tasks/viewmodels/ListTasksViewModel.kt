@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.tasks.database.TaskRepository
 import br.com.tasks.events.ListEvent
 import br.com.tasks.events.UiEvent
+import br.com.tasks.navigation.AddEditTasksScreen
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -40,6 +41,10 @@ class ListTasksViewModel(
             }
 
             is ListEvent.EditTask -> {
+                viewModelScope.launch {
+                    _uiEvent.send(UiEvent.Navigate(AddEditTasksScreen(event.id)))
+                }
+
             }
         }
     }

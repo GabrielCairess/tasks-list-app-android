@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditScreen(
+    taskId: Long?,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -40,7 +41,7 @@ fun AddEditScreen(
     val repository = TaskRepositoryImpl(taskDao = dao)
 
     val viewModel = viewModel {
-        AddEditViewModel(repository)
+        AddEditViewModel(taskId, repository)
     }
 
     val scope = rememberCoroutineScope()
@@ -129,6 +130,7 @@ fun AddEditContent(
 @Composable
 private fun AddEdistScreenPreview() {
     AddEditScreen(
+        taskId = null,
         navigateBack = {}
     )
 }
